@@ -654,15 +654,15 @@ static void *JianceYinpin(void *arg)
             PrintLog(0,"bofang yinpin shock.mp3 \n");
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
-            Sleep(3);
+            Sleep(600);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
-            Sleep(3);
+            Sleep(600);
             //
             //音频有效，则循环播放音频文件
             sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
             system(cmd);
-            Sleep(3);
+            Sleep(600);
             //切换音频播放开关
             gpio_set_value(GPIO_39,0);
             gpio_set_value(GPIO_42,0);
@@ -672,11 +672,11 @@ static void *JianceYinpin(void *arg)
             //无音频文件，播放提示音qidongganyu.wav
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/musicefileInvalid.wav  &");
             system(cmd);
-            Sleep(3);
+            Sleep(600);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
         }
-        Sleep(30);
+        Sleep(600);
     }
     return 0;
 }
