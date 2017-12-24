@@ -636,6 +636,18 @@ static void *PlayTask_Pressdown(void *arg)
     }
     return 0;
 }
+static int Kaishizhendong()
+{
+    char cmd[512] = {0};
+    memset(cmd,0,512);
+    //音频有效，则循环播放音频文件
+    sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
+    system(cmd);
+    Sleep(600);
+    //切换音频播放开关
+    gpio_set_value(GPIO_39,0);
+    gpio_set_value(GPIO_42,0);
+}
 //监测uci
 static void *JianceYinpin(void *arg)
 {
@@ -651,26 +663,19 @@ static void *JianceYinpin(void *arg)
     currentButtonState  = 0;
     while (1) {
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
-            PrintLog(0,"bofang yinpin shock.mp3 \n");
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
             Sleep(600);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
             Sleep(600);
-            //
-            //音频有效，则循环播放音频文件
-            sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
-            system(cmd);
-            Sleep(600);
-            //切换音频播放开关
-            gpio_set_value(GPIO_39,0);
-            gpio_set_value(GPIO_42,0);
+            Kaishizhendong();
+            break;
         }
         else
         {
-            //无音频文件，播放提示音qidongganyu.wav
-            sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/musicefileInvalid.wav  &");
+            //无音频文件，播放提示音
+            sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/1.wav  &");
             system(cmd);
             Sleep(600);
             gpio_set_value(GPIO_39,1);
