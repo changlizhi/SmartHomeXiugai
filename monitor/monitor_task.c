@@ -851,7 +851,7 @@ int MonitorTaskInit(void)
     //SysCreateTask(NetLedTask_Monitor, NULL);
     //SysCreateTask(SysLedTask_Monitor, NULL);
     //SysCreateTask(VolumeBtn_Pressdown, NULL);
-    //SET_INIT_FLAG(MonitorTaskInit);
+    SET_INIT_FLAG(MonitorTaskInit);
     return 0;
 }
 
