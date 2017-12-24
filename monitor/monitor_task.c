@@ -650,7 +650,14 @@ static void *JianceYinpin(void *arg)
     currentButtonState  = 0;
     while (1) {
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
-            PlayVoice("welcome1.wav",0);
+            PrintLog(0,"bofang yinpin shock.mp3 \n");
+            sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
+            system(cmd);
+            Sleep(3);
+            gpio_set_value(GPIO_39,1);
+            gpio_set_value(GPIO_42,1);
+            Sleep(3);
+            //
             //音频有效，则循环播放音频文件
             sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
             system(cmd);
@@ -661,7 +668,6 @@ static void *JianceYinpin(void *arg)
         }
         else
         {
-            PlayVoice("welcome.wav",0);
             //无音频文件，播放提示音qidongganyu.wav
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/musicefileInvalid.wav  &");
             system(cmd);
@@ -669,7 +675,7 @@ static void *JianceYinpin(void *arg)
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
         }
-        Sleep(3);
+        Sleep(30);
     }
     return 0;
 }
