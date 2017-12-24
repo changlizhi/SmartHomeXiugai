@@ -646,7 +646,8 @@ static void *JianceYinpin(void *arg)
     gpio_export(GPIO_PLAY);
     gpio_set_dir(GPIO_PLAY, 0);
     gpio_set_edge(GPIO_PLAY, "rising");
-
+    char cmd[512] = {0};
+    memset(cmd,0,512);
     currentButtonState  = 0;
     while (1) {
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
