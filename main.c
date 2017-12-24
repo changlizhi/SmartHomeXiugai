@@ -53,7 +53,7 @@ static void startup(void)
     MonitorInit();
 
 
-    SvrCommInit();
+    //SvrCommInit();
     CheckInitFlag();
     {
         sysclock_t clock;
