@@ -636,14 +636,43 @@ static void *PlayTask_Pressdown(void *arg)
     }
     return 0;
 }
-static void wifitodnamy(){//仅供公司测试时使用，一旦wifi设置失败了，可以长按+号5秒进行公司的wifi链接
-    sleep(600);
-    char systemcheckcmd[512] = {0};
-    memset(systemcheckcmd,0,512);
-    sprintf(systemcheckcmd,"sh /www/cgi-bin/setwifi dnamy 2017dnamy");//测试控制器
-    system(systemcheckcmd);
-}
+//监测uci
+static void *JianceYinpin(void *arg)
+{
 
+    static int presstimes = 0;
+    unsigned int value = 0;
+    int  playstate = 0;
+    gpio_export(GPIO_PLAY);
+    gpio_set_dir(GPIO_PLAY, 0);
+    gpio_set_edge(GPIO_PLAY, "rising");
+
+    currentButtonState  = 0;
+    while (1) {
+        if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
+            PlayVoice("welcome1.wav",0);
+            //音频有效，则循环播放音频文件
+            sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
+            system(cmd);
+            Sleep(3);
+            //切换音频播放开关
+            gpio_set_value(GPIO_39,0);
+            gpio_set_value(GPIO_42,0);
+        }
+        else
+        {
+            PlayVoice("welcome.wav",0);
+            //无音频文件，播放提示音qidongganyu.wav
+            sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/musicefileInvalid.wav  &");
+            system(cmd);
+            Sleep(3);
+            gpio_set_value(GPIO_39,1);
+            gpio_set_value(GPIO_42,1);
+        }
+        Sleep(3);
+    }
+    return 0;
+}
 //监测音量按键按下事件
 static void *VolumeBtn_Pressdown(void *arg)
 {
@@ -694,7 +723,6 @@ static void *VolumeBtn_Pressdown(void *arg)
 //                        PlayVoice("enablewifi.wav",0);
 //                        sprintf(cmd,"wifi up");
 //                        system(cmd);
-//                        wifitodnamy();//仅供测试使用
 //                        pressaddtimes = 0;
 //                    }
 //                }
@@ -808,15 +836,16 @@ int MonitorTaskInit(void)
 {
 
     RunStateInit();
-    SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
+    //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
+    SysCreateTask(JianceYinpin, NULL);//音频播放键按下时任务
     AlarmInit();
-    SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
-    SysCreateTask(UpdateAlarmTask_Monitor, NULL);//更新播放时间
-    SysCreateTask(DownLoadMusicTask_Monitor, NULL);//音乐下载，内部有协议通信方法
-    SysCreateTask(NetLedTask_Monitor, NULL);
-    SysCreateTask(SysLedTask_Monitor, NULL);
-    SysCreateTask(VolumeBtn_Pressdown, NULL);
-    SET_INIT_FLAG(MonitorTaskInit);
+    //SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
+    //SysCreateTask(UpdateAlarmTask_Monitor, NULL);//更新播放时间
+    //SysCreateTask(DownLoadMusicTask_Monitor, NULL);//音乐下载，内部有协议通信方法
+    //SysCreateTask(NetLedTask_Monitor, NULL);
+    //SysCreateTask(SysLedTask_Monitor, NULL);
+    //SysCreateTask(VolumeBtn_Pressdown, NULL);
+    //SET_INIT_FLAG(MonitorTaskInit);
     return 0;
 }
 
