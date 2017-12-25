@@ -636,6 +636,95 @@ static void *PlayTask_Pressdown(void *arg)
     }
     return 0;
 }
+
+//监测音量按键按下事件
+static void *Yinliangzengjian(void *arg)
+{
+    static int pressaddtimes = 0;
+    static int presssubtimes = 0;
+    static int currentVolume = 9;
+    unsigned char VolumeLevel[10]={0};
+    VolumeLevel[0] = 0;
+    VolumeLevel[1] = 40;
+    VolumeLevel[2] = 70;
+    VolumeLevel[3] = 80;
+    VolumeLevel[4] = 90;
+    VolumeLevel[5] = 100;
+    VolumeLevel[6] = 110;
+    VolumeLevel[7] = 120;
+    VolumeLevel[8] = 124;
+    VolumeLevel[9] = 127;
+    char   cmd[100];
+    int gpio_fdadd;
+    int gpio_fdsub;
+
+    unsigned int value = 0;
+
+    gpio_export(GPIO_KEY_ADD);
+    gpio_set_dir(GPIO_KEY_ADD, 0);
+    gpio_set_edge(GPIO_KEY_ADD, "rising");
+    gpio_fdadd = gpio_fd_open(GPIO_KEY_ADD);
+
+    gpio_export(GPIO_KEY_SUB);
+    gpio_set_dir(GPIO_KEY_SUB, 0);
+    gpio_set_edge(GPIO_KEY_SUB, "rising");
+    gpio_fdsub = gpio_fd_open(GPIO_KEY_SUB);
+
+    PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+
+    while (1) {
+        gpio_get_value(GPIO_KEY_ADD,&value);
+        if(value == 0 )//按下
+        {
+            pressaddtimes++;
+        }
+        else if(value == 1)
+        {
+            if(pressaddtimes>5)//消抖
+            {
+                if(currentVolume<9)
+                    currentVolume++;
+
+                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+                memset(cmd,0,100);
+                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+                system(cmd);
+                pressaddtimes = 0;
+            }
+        }
+
+        gpio_get_value(GPIO_KEY_SUB,&value);
+        if(value == 0 )//按下
+        {
+            presssubtimes++;
+        }
+        else if(value == 1)
+        {
+            if(presssubtimes > 5)//消抖
+            {
+
+                if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
+                    currentVolume--;
+                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+                memset(cmd,0,100);
+                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+                system(cmd);
+                presssubtimes = 0;
+            }
+        }
+        Sleep(1);
+        if(exitflag)
+        {
+          gpio_fd_close(gpio_fdadd);
+          gpio_fd_close(gpio_fdsub);
+          break;
+        }
+    }
+    gpio_fd_close(gpio_fdadd);
+    gpio_fd_close(gpio_fdsub);
+    return 0;
+}
+
 static int Kaishizhendong()
 {
     char cmd[512] = {0};
@@ -848,8 +937,9 @@ int MonitorTaskInit(void)
 {
 
     RunStateInit();
-    //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
     SysCreateTask(JianceYinpin, NULL);//音频播放键按下时任务
+    SysCreateTask(Yinliangzengjian, NULL);//音量增减功能
+    //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
     AlarmInit();
     //SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
     //SysCreateTask(UpdateAlarmTask_Monitor, NULL);//更新播放时间
