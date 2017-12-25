@@ -15,7 +15,7 @@ config wifi-iface 'ap'
 	option network 'lan'
 	option ifname 'ra0'
 	option encryption 'none'
-	option ssid '迪恩摩因-0011'
+	option ssid 'DNAMY-0011'
 
 config wifi-iface 'sta'
 	option device 'radio0'
