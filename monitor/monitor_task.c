@@ -769,7 +769,7 @@ static void *JianceYinpin(void *arg)
             //无音频文件，播放提示音
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/1.wav  &");
             system(cmd);
-            Sleep(600);
+            Sleep(10);//10毫秒
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
         }
