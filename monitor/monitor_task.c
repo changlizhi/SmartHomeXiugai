@@ -676,43 +676,27 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_ADD,&value);
         if(value == 0 )//按下
         {
-            pressaddtimes++;
-        }
-        else if(value == 1)
-        {
-            if(pressaddtimes>5)//消抖
-            {
-                if(currentVolume<9)
-                    currentVolume++;
-
-                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
-                memset(cmd,0,100);
-                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
-                system(cmd);
-                pressaddtimes = 0;
-            }
+            if(currentVolume<9)
+                currentVolume++;
+            PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+            memset(cmd,0,100);
+            sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+            system(cmd);
+            pressaddtimes = 0;
         }
 
         gpio_get_value(GPIO_KEY_SUB,&value);
         if(value == 0 )//按下
         {
-            presssubtimes++;
+           if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
+               currentVolume--;
+           PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+           memset(cmd,0,100);
+           sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+           system(cmd);
+           presssubtimes = 0;
         }
-        else if(value == 1)
-        {
-            if(presssubtimes > 5)//消抖
-            {
-
-                if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
-                    currentVolume--;
-                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
-                memset(cmd,0,100);
-                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
-                system(cmd);
-                presssubtimes = 0;
-            }
-        }
-        Sleep(1);
+        Sleep(50);//消抖放在这里
         if(exitflag)
         {
           gpio_fd_close(gpio_fdadd);
