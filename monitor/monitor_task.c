@@ -640,8 +640,6 @@ static void *PlayTask_Pressdown(void *arg)
 //监测音量按键按下事件
 static void *Yinliangzengjian(void *arg)
 {
-
-
     static int pressaddtimes = 0;
     static int presssubtimes = 0;
     static int currentVolume = 9;
@@ -675,53 +673,52 @@ static void *Yinliangzengjian(void *arg)
     PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
 
     while (1) {
-
-            gpio_get_value(GPIO_KEY_ADD,&value);
-            if(value == 1)
+        gpio_get_value(GPIO_KEY_ADD,&value);
+        if(value == 0 )//按下
+        {
+            pressaddtimes++;
+        }
+        else if(value == 1)
+        {
+            if(pressaddtimes>5)//消抖
             {
-                if(pressaddtimes>5)
-                {
-                    PlayVoice("3.wav",0);
-                    sleep(300);
-                    if(currentVolume<9)
-                        currentVolume++;
+                if(currentVolume<9)
+                    currentVolume++;
 
-                    PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
-                    memset(cmd,0,100);
-                    sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
-                    system(cmd);
-                    pressaddtimes = 0;
-                }
+                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+                memset(cmd,0,100);
+                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+                system(cmd);
+                pressaddtimes = 0;
             }
+        }
 
-            gpio_get_value(GPIO_KEY_SUB,&value);
-            if(value == 0 )
+        gpio_get_value(GPIO_KEY_SUB,&value);
+        if(value == 0 )//按下
+        {
+            presssubtimes++;
+        }
+        else if(value == 1)
+        {
+            if(presssubtimes > 5)//消抖
             {
-                presssubtimes++;
-            }
-            else if(value == 1)
-            {
-                if(presssubtimes>5)
-                {
-                    PlayVoice("4.wav",0);
-                    sleep(300);
-                    if(currentVolume>0)
-                        currentVolume--;
-                    PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
-                    memset(cmd,0,100);
-                    sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
-                    system(cmd);
-                    presssubtimes = 0;
-                }
-            }
 
+                if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
+                    currentVolume--;
+                PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+                memset(cmd,0,100);
+                sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
+                system(cmd);
+                presssubtimes = 0;
+            }
+        }
         Sleep(1);
-    if(exitflag)
-    {
-      gpio_fd_close(gpio_fdadd);
-      gpio_fd_close(gpio_fdsub);
-        break;
-    }
+        if(exitflag)
+        {
+          gpio_fd_close(gpio_fdadd);
+          gpio_fd_close(gpio_fdsub);
+          break;
+        }
     }
     gpio_fd_close(gpio_fdadd);
     gpio_fd_close(gpio_fdsub);
@@ -769,7 +766,7 @@ static void *JianceYinpin(void *arg)
             //无音频文件，播放提示音
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/1.wav  &");
             system(cmd);
-            Sleep(10);//10毫秒
+            Sleep(600);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
         }
