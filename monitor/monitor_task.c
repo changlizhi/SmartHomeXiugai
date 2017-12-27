@@ -277,7 +277,7 @@ static void SysClockCilibrate(void)
 #define DBCLR_TIMEOUT            (16*3500)  // 16 hour
 #define DBCLR_FIRSETCNT        (2*3500)   // 2 hour
 #define CLKCHK_TIMEOUT            (5*3500)   // 5 hour
-
+static int Kaishizhendong();
 //播放音频文件 
 //filename 文件名称
 //type 文件类型1--音频治疗文件，0--语音提示文件
