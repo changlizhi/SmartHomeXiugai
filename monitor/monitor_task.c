@@ -666,7 +666,7 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
                     {
 //                        if(UpdateAudiourlFlag == 0)// 没有更新音频，这步骤可以去掉，在开机时会进行判断。
 //                        {
-                            playstate = PlayVoice("shock.mp3",1);
+                            playstate = Kaishizhendong();//只播放
                             if(playstate == 0)
                             {
                                 MakeAlarmG(GetCurrentAlarm());
@@ -818,6 +818,7 @@ static int Kaishizhendong()
     //切换音频播放开关
     gpio_set_value(GPIO_39,0);
     gpio_set_value(GPIO_42,0);
+    return 0;
 }
 //监测uci
 static void *JianceYinpin(void *arg)
