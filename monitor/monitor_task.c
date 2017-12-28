@@ -742,6 +742,8 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_ADD,&value);
         if(value == 0 )//按下
         {
+
+            printf("clz test1111111111111111");
             pressaddtimes++;
         }
         else if(value == 1)
@@ -762,6 +764,8 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_SUB,&value);
         if(value == 0 )//按下
         {
+
+            printf("clz test2222222222222");
             presssubtimes++;
         }
         else if(value == 1)
