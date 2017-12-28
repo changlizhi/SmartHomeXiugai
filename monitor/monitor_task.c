@@ -751,6 +751,7 @@ static void *Yinliangzengjian(void *arg)
                 if(currentVolume<9)
                     currentVolume++;
 
+                PrintLog(0,"add-----------------clztest");
                 PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
                 memset(cmd,0,100);
                 sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
@@ -772,6 +773,7 @@ static void *Yinliangzengjian(void *arg)
                 if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
                     currentVolume--;
                 PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
+                PrintLog(0,"sub-----------------clztest");
                 memset(cmd,0,100);
                 sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
                 system(cmd);
