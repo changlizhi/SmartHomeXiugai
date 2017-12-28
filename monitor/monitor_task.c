@@ -347,17 +347,17 @@ static int PlayVoice(const char * filename,int type)
 */
 extern void DbaseClear(void);
 //更新音频播放记录和统计播放时长，存入文件中，在设备登录后用于上传工作参数
-static void *UpdateAlarmTask_Monitor(void *arg)
+static void *GengxinBofang(void *arg)
 {
     static int times = 0;
     while(1){//每100毫秒监测一次
 
-        if(currentButtonState == 1)//如果是播放按键为按下
+        if(currentButtonState == 1)//如果是播放状态
         {
             times++;
             if(times >= 30)
             {
-                PrintLog(0,"UpdateAlarmTask_Monitor");
+                PrintLog(0,"GengxinBofang");
                 UpdateAlarm(GetCurrentAlarm());//更新播放时间
                 times = 0;
             }
@@ -367,8 +367,6 @@ static void *UpdateAlarmTask_Monitor(void *arg)
             times = 0;
         }
         Sleep(100);
-
-
         if(exitflag)
             break;
     }
@@ -995,8 +993,8 @@ int MonitorTaskInit(void)
     SysCreateTask(Bofangzanting, NULL);//音量播放/暂停功能
     //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
     AlarmInit();
+    SysCreateTask(GengxinBofang, NULL);//更新播放时间
     //SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
-    //SysCreateTask(UpdateAlarmTask_Monitor, NULL);//更新播放时间
     //SysCreateTask(DownLoadMusicTask_Monitor, NULL);//音乐下载，内部有协议通信方法
     //SysCreateTask(NetLedTask_Monitor, NULL);
     //SysCreateTask(SysLedTask_Monitor, NULL);
