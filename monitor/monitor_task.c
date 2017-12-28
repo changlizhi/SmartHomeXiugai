@@ -641,7 +641,6 @@ static void *PlayTask_Pressdown(void *arg)
 //监测播放按键按下事件
 static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db格式的文件长啥样
 {
-
     static int presstimes = 0;
     unsigned int value = 0;
     int  playstate = 0;
@@ -650,8 +649,6 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
     gpio_set_edge(GPIO_PLAY, "rising");
 
     currentButtonState  = 0;
-    //system("sh /opt/work/unzipmusic.sh");
-
     while (1) {
         gpio_get_value(GPIO_PLAY,&value);
         if(value == 0 )
@@ -660,34 +657,24 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
         }
         else if(value == 1)
         {
-            if(presstimes>5)// 消抖
+            if(presstimes>5)
             {
-                if(currentButtonState == 0)// 停止
+                if(currentButtonState == 0)
                 {
-                    playstate = Kaishizhendong();//只播放
+                    playstate = Kaishizhendong();
                     if(playstate == 0)
                     {
-                        MakeAlarmG(GetCurrentAlarm());
-                        currentButtonState = 1;//播放中
-                        PrintLog(0,"play button press to start play...\n");
-//                      system("wifi up");//开启wifi上传数据？
-//                      SvrCommLineState = LINESTAT_OFF;
+                        MakeAlarmG(GetCurrentAlarm());//开始记录播放大小
+                        currentButtonState = 1;
+                        PrintLog(0,"bofangzhong jilu daxiao...\n");
                     }
                 }
                 else if(currentButtonState == 1)
                 {
-                    PrintLog(0,"play button press to stop play...\n");
+                    PrintLog(0,"guanbi yinpin...\n");
                     system("killall -9 madplay");
-                    PrintLog(0,"play button press to stop play1...\n");
-
-                    SaveAlarm(GetCurrentAlarm());
-                    gpio_set_value(GPIO_42,1);
-                    gpio_set_value(GPIO_39,0);
-                    //system("wifi up");
-                    PrintLog(0,"play button press to stop play2...\n");
-
-                    PlayVoice("stopplay.wav",0);
-                    PrintLog(0,"play button press to stop play3...\n");
+                    PrintLog(0,"guanbi yinpin chenggong...\n");
+                    SaveAlarm(GetCurrentAlarm());//记录播放时间
                     currentButtonState = 0;
                 }
                 presstimes = 0;
@@ -741,7 +728,6 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_ADD,&value);
         if(value == 0 )//按下
         {
-            PrintLog(0,"clztest---------------111111");
             pressaddtimes++;
         }
         else if(value == 1)
@@ -751,7 +737,6 @@ static void *Yinliangzengjian(void *arg)
                 if(currentVolume<9)
                     currentVolume++;
 
-                PrintLog(0,"add-----------------clztest");
                 PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
                 memset(cmd,0,100);
                 sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
@@ -763,17 +748,16 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_SUB,&value);
         if(value == 0 )//按下
         {
-            PrintLog(0,"clztest---------------22222");
             presssubtimes++;
         }
         else if(value == 1)
         {
             if(presssubtimes > 5)//消抖
             {
+
                 if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
                     currentVolume--;
                 PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
-                PrintLog(0,"sub-----------------clztest");
                 memset(cmd,0,100);
                 sprintf(cmd,"amixer cset numid=9,iface=MIXER,name=\'Headphone Playback Volume\' %d",VolumeLevel[currentVolume]);
                 system(cmd);
@@ -800,7 +784,7 @@ static int Kaishizhendong()
     //音频有效，则循环播放音频文件
     sprintf(cmd,"madplay /tmp/mounts/SD-P1/play/shock.mp3 -r &");
     system(cmd);
-    Sleep(600);
+    Sleep(50);
     //切换音频播放开关
     gpio_set_value(GPIO_39,0);
     gpio_set_value(GPIO_42,0);
