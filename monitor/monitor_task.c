@@ -355,7 +355,7 @@ static void *GengxinBofang(void *arg)
         if(currentButtonState == 1)//如果是播放状态
         {
             times++;
-            if(times >= 30)
+            if(times >= 6)
             {
                 PrintLog(0,"GengxinBofang");
                 UpdateAlarm(GetCurrentAlarm());//更新播放时间
