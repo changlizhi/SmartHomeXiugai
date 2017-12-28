@@ -75,10 +75,12 @@ void UpdateAlarm(alarm_buf_t *pbuf)
     idxbase = RunStateG.alarm.cur & ALARM_BASEMASK;
     if(SaveBinFile(filename, ALARM_MAGIC, (unsigned char *)&pbase[idxbase], sizeof(alarm_buf_t)*ALMNUM_PERFILE)==0)
     {
+        PrintLog(0,"clztest--------UpdateAlarm---success!");
         DebugPrint(0 ,"idxbase is: %d start time is: %s current time is %s  save successed\n",idxbase,UTimeFormat(pbuf->starttime),UTimeFormat(pbuf->endtime));
     }
     else
     {
+        PrintLog(0,"clztest--------UpdateAlarm---failed!");
         DebugPrint(0 ,"save failed\n");
     }
 
@@ -106,10 +108,12 @@ void SaveAlarm(alarm_buf_t *pbuf)
     idxbase = RunStateG.alarm.cur & ALARM_BASEMASK;
     if(SaveBinFile(filename, ALARM_MAGIC, (unsigned char *)&pbase[idxbase], sizeof(alarm_buf_t)*ALMNUM_PERFILE)==0)
     {
+        PrintLog(0,"clztest--------savebinfile---success!");
         DebugPrint(0 ,"idxbase is: %d start time is: %s current time is %s  save successed\n",idxbase,UTimeFormat(pbuf->starttime),UTimeFormat(pbuf->endtime));
     }
     else
     {
+        PrintLog(0,"clztest--------savebinfile---failed!");
         DebugPrint(0 ,"save failed\n");
     }
 
@@ -227,10 +231,12 @@ int AlarmInit(void)
         DebugPrint(0, "i%d", offset/ALMNUM_PERFILE);
         if(ReadBinFile(filename, ALARM_MAGIC, (unsigned char *)pbuf, sizeof(alarm_buf_t)*ALMNUM_PERFILE) > 0)
         {
+            PrintLog(0,"clztest--------ReadBinFile---success!--------%s",pbuf);
             DebugPrint(0, "AlarmInit ok, ");
         }
         else
         {
+            PrintLog(0,"clztest--------ReadBinFile---failed!----%s",pbuf);
             DebugPrint(0, "AlarmInit fail, ");
         }
     }
