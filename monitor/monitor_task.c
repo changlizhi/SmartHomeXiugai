@@ -992,8 +992,8 @@ int MonitorTaskInit(void)
     SysCreateTask(Yinliangzengjian, NULL);//音量增减功能
     SysCreateTask(Bofangzanting, NULL);//音量播放/暂停功能
     //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
-    AlarmInit();
     SysCreateTask(GengxinBofang, NULL);//更新播放时间
+    AlarmInit();
     //SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
     //SysCreateTask(DownLoadMusicTask_Monitor, NULL);//音乐下载，内部有协议通信方法
     //SysCreateTask(NetLedTask_Monitor, NULL);
