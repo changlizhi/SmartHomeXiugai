@@ -232,6 +232,8 @@ int AlarmInit(void)
         if(ReadBinFile(filename, ALARM_MAGIC, (unsigned char *)pbuf, sizeof(alarm_buf_t)*ALMNUM_PERFILE) > 0)
         {
             PrintLog(0,"clztest--------ReadBinFile---success!--------%s",pbuf);
+            PrintLog(0,"alarm_buf_t.starttime---------%d",pbuf.starttime);
+            PrintLog(0,"alarm_buf_t.endtime---------%d",pbuf.endtime);
             DebugPrint(0, "AlarmInit ok, ");
         }
         else
