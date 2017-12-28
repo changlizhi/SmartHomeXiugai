@@ -656,7 +656,6 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
         gpio_get_value(GPIO_PLAY,&value);
         if(value == 0 )
         {
-            printf("clz test00000000000000000000");
             presstimes++;
         }
         else if(value == 1)
@@ -742,8 +741,7 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_ADD,&value);
         if(value == 0 )//按下
         {
-
-            printf("clz test1111111111111111");
+            PrintLog(0,"clztest---------------111111");
             pressaddtimes++;
         }
         else if(value == 1)
@@ -764,15 +762,13 @@ static void *Yinliangzengjian(void *arg)
         gpio_get_value(GPIO_KEY_SUB,&value);
         if(value == 0 )//按下
         {
-
-            printf("clz test2222222222222");
+            PrintLog(0,"clztest---------------22222");
             presssubtimes++;
         }
         else if(value == 1)
         {
             if(presssubtimes > 5)//消抖
             {
-
                 if(currentVolume > 3)//最小音量不能小于3，否则振动就非常小了
                     currentVolume--;
                 PrintLog(0,"play current volume is %d...\n",VolumeLevel[currentVolume]);
