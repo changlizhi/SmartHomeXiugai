@@ -653,68 +653,52 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
     //system("sh /opt/work/unzipmusic.sh");
 
     while (1) {
-            gpio_get_value(GPIO_PLAY,&value);
-            if(value == 0 )
+        gpio_get_value(GPIO_PLAY,&value);
+        if(value == 0 )
+        {
+            printf("clz test00000000000000000000");
+            presstimes++;
+        }
+        else if(value == 1)
+        {
+            if(presstimes>5)// 消抖
             {
-                presstimes++;
-            }
-            else if(value == 1)
-            {
-                if(presstimes>5)// 消抖
+                if(currentButtonState == 0)// 停止
                 {
-                    if(currentButtonState == 0)// 停止
+                    playstate = Kaishizhendong();//只播放
+                    if(playstate == 0)
                     {
-//                        if(UpdateAudiourlFlag == 0)// 没有更新音频，这步骤可以去掉，在开机时会进行判断。
-//                        {
-                            playstate = Kaishizhendong();//只播放
-                            if(playstate == 0)
-                            {
-                                MakeAlarmG(GetCurrentAlarm());
-                                currentButtonState = 1;//播放中
-                                PrintLog(0,"play button press to start play...\n");
-//                                system("wifi up");//开启wifi上传数据？
-//                                SvrCommLineState = LINESTAT_OFF;
-                            }
-//                        }
-//                        else if(UpdateAudiourlFlag == 1)// 正在更新音频，这个功能其实不应该放这里
-//                        {
-//                            PlayVoice("downloading.wav",0);
-//                        }
-
+                        MakeAlarmG(GetCurrentAlarm());
+                        currentButtonState = 1;//播放中
+                        PrintLog(0,"play button press to start play...\n");
+//                      system("wifi up");//开启wifi上传数据？
+//                      SvrCommLineState = LINESTAT_OFF;
                     }
-                    else if(currentButtonState == 1)
-                    {
-//                        if(UpdateAudiourlFlag == 1)
-//                        {
-//                            PlayVoice("downloading.wav",0);
-//                        }
-//                        else if(UpdateAudiourlFlag == 0)
-//                        {
-                            PrintLog(0,"play button press to stop play...\n");
-                            system("killall -9 madplay");
-                            PrintLog(0,"play button press to stop play1...\n");
-
-                            SaveAlarm(GetCurrentAlarm());
-                            gpio_set_value(GPIO_42,1);
-                            gpio_set_value(GPIO_39,0);
-                            //system("wifi up");
-                            PrintLog(0,"play button press to stop play2...\n");
-
-                            PlayVoice("stopplay.wav",0);
-                            PrintLog(0,"play button press to stop play3...\n");
-
-                            currentButtonState = 0;
-//                        }
-                    }
-                    presstimes = 0;
                 }
-            }
-        Sleep(1);
-    if(exitflag)
-    {
+                else if(currentButtonState == 1)
+                {
+                    PrintLog(0,"play button press to stop play...\n");
+                    system("killall -9 madplay");
+                    PrintLog(0,"play button press to stop play1...\n");
 
-        break;
-    }
+                    SaveAlarm(GetCurrentAlarm());
+                    gpio_set_value(GPIO_42,1);
+                    gpio_set_value(GPIO_39,0);
+                    //system("wifi up");
+                    PrintLog(0,"play button press to stop play2...\n");
+
+                    PlayVoice("stopplay.wav",0);
+                    PrintLog(0,"play button press to stop play3...\n");
+                    currentButtonState = 0;
+                }
+                presstimes = 0;
+            }
+        }
+        Sleep(1);
+        if(exitflag)
+        {
+            break;
+        }
     }
     return 0;
 }
