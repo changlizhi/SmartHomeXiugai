@@ -278,6 +278,7 @@ static void SysClockCilibrate(void)
 #define DBCLR_FIRSETCNT        (2*3500)   // 2 hour
 #define CLKCHK_TIMEOUT            (5*3500)   // 5 hour
 static int Kaishizhendong();
+static void *GengxinBofang(void *arg);
 //播放音频文件 
 //filename 文件名称
 //type 文件类型1--音频治疗文件，0--语音提示文件
@@ -350,8 +351,9 @@ extern void DbaseClear(void);
 static void *GengxinBofang(void *arg)
 {
     static int times = 0;
-    while(1){//每100毫秒监测一次
+    while(1){//每秒监测一次
 
+        PrintLog(0,"GengxinBofang");
         if(currentButtonState == 1)//如果是播放状态
         {
             times++;
@@ -367,8 +369,6 @@ static void *GengxinBofang(void *arg)
             times = 0;
         }
         Sleep(100);
-        if(exitflag)
-            break;
     }
     return 0;
 }
