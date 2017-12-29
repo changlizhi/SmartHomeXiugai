@@ -635,7 +635,7 @@ static void *PlayTask_Pressdown(void *arg)
 
 
 //监测播放按键按下事件
-static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db格式的文件长啥样
+static void *Bofangzanting(void *arg)
 {
     static int presstimes = 0;
     unsigned int value = 0;
@@ -655,6 +655,8 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
         {
             if(presstimes>5)
             {
+
+                PrintLog(0,"currentButtonState=======%d \n",currentButtonState);
                 if(currentButtonState == 0)
                 {
                     playstate = Kaishizhendong();
