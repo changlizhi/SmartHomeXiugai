@@ -810,9 +810,10 @@ static void *JianceYinpin(void *arg)
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
-            Sleep(6);
+            Sleep(600);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
+            Sleep(600);
             Kaishizhendong();
             break;
         }
