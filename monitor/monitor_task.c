@@ -352,8 +352,6 @@ static void *GengxinBofang(void *arg)
 {
     static int times = 0;
     while(1){//每秒监测一次
-
-        PrintLog(0,"GengxinBofang");
         if(currentButtonState == 1)//如果是播放状态
         {
             times++;
@@ -662,7 +660,7 @@ static void *Bofangzanting(void *arg)//检验是否会生成db文件，以及db�
                     playstate = Kaishizhendong();
                     if(playstate == 0)
                     {
-                        MakeAlarmG(GetCurrentAlarm());//开始记录播放大小
+                        SaveAlarm(GetCurrentAlarm());//开始记录播放大小这里应该是循环更新时间，因为初始有一个时间了
                         currentButtonState = 1;
                         PrintLog(0,"bofangzhong jilu daxiao...\n");
                     }
@@ -788,13 +786,17 @@ static int Kaishizhendong()
     gpio_set_value(GPIO_42,0);
     return 0;
 }
+
+static void *Jilushijian(void *arg){
+    MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件
+}
+
 //监测uci
 static void *JianceYinpin(void *arg)
 {
 
     static int presstimes = 0;
     unsigned int value = 0;
-    int  playstate = 0;
     gpio_export(GPIO_PLAY);
     gpio_set_dir(GPIO_PLAY, 0);
     gpio_set_edge(GPIO_PLAY, "rising");
@@ -805,10 +807,10 @@ static void *JianceYinpin(void *arg)
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
-            Sleep(600);
+            Sleep(5);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
-            Sleep(600);
+            Sleep(5);
             Kaishizhendong();
             break;
         }
@@ -988,12 +990,14 @@ int MonitorTaskInit(void)
 {
 
     RunStateInit();
-    SysCreateTask(JianceYinpin, NULL);//音频播放键按下时任务
+
+    SysCreateTask(Jilushijian, NULL);//创建记录时间的文件，如果不存在就创建
+    AlarmInit();//读取时间文件
+    SysCreateTask(JianceYinpin, NULL);//启动时自动查找音频是否存在，存在则直接播放，播放时自动更新时间增量
     SysCreateTask(Yinliangzengjian, NULL);//音量增减功能
     SysCreateTask(Bofangzanting, NULL);//音量播放/暂停功能
-    //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
     SysCreateTask(GengxinBofang, NULL);//更新播放时间
-    AlarmInit();
+    //SysCreateTask(PlayTask_Pressdown, NULL);//音频播放键按下时任务
     //SysCreateTask(UpdateSystemTask_Monitor, NULL);//系统更新任务
     //SysCreateTask(DownLoadMusicTask_Monitor, NULL);//音乐下载，内部有协议通信方法
     //SysCreateTask(NetLedTask_Monitor, NULL);
