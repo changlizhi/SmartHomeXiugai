@@ -786,6 +786,7 @@ static int Kaishizhendong()
     //切换音频播放开关
     gpio_set_value(GPIO_39,0);
     gpio_set_value(GPIO_42,0);
+    currentButtonState = 1;
     return 0;
 }
 
@@ -809,10 +810,9 @@ static void *JianceYinpin(void *arg)
         if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
-            Sleep(600);
+            Sleep(6);
             gpio_set_value(GPIO_39,1);
             gpio_set_value(GPIO_42,1);
-            Sleep(600);
             Kaishizhendong();
             break;
         }
