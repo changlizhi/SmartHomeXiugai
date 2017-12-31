@@ -794,6 +794,34 @@ static void *Jilushijian(void *arg){
     MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件
 }
 
+static int Yinpinguoqi(char *lujing){
+    PrintLog(0,"lujing-----%s",lujing);
+    time_t t;
+    t=time(0);//当前时间秒数
+
+    PrintLog(0,"t-----%ld",t)
+    struct stat buf;
+    int result;
+
+    //获得文件状态信息
+
+    result =stat(lujing, &buf );
+
+    //显示文件状态信息
+
+    if( result != 0 ){
+        PrintLog( "wenjian chucuo" );//并提示出错的原因，如No such file or directory（无此文件或索引）
+    }
+    else
+    {
+        PrintLog("wenjian daxiao: %d", buf.st_size);
+        PrintLog("chuangjian shijian : %s", ctime(&buf.st_ctime));
+        PrintLog("fangwen shijian : %s", ctime(&buf.st_atime));
+        PrintLog("xiugai shijian: %s", ctime(&buf.st_mtime));
+
+    }
+}
+
 //监测uci
 static void *JianceYinpin(void *arg)
 {
@@ -807,7 +835,10 @@ static void *JianceYinpin(void *arg)
     memset(cmd,0,512);
     currentButtonState  = 0;
     while (1) {
-        if(access("/tmp/mounts/SD-P1/play/shock.mp3",F_OK)==0){
+        char *lujing = "/tmp/mounts/SD-P1/play/shock.mp3";
+        if(access(lujing,F_OK)==0){
+
+            Yinpinguoqi(lujing);
             sprintf(cmd,"aplay /tmp/mounts/SD-P1/voice/2.wav  &");
             system(cmd);
             Sleep(600);
