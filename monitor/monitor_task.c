@@ -352,12 +352,12 @@ static void *GengxinBofang(void *arg)
 {
     static int times = 0;
     while(1){//每秒监测一次
+        PrintLog(0,"GengxinBofang---currentButtonState---%s\n",currentButtonState);
         if(currentButtonState == 1)//如果是播放状态
         {
             times++;
             if(times >= 6)
             {
-                PrintLog(0,"GengxinBofang");
                 UpdateAlarm(GetCurrentAlarm());//更新播放时间
                 times = 0;
             }
@@ -791,7 +791,11 @@ static int Kaishizhendong()
 }
 
 static void *Jilushijian(void *arg){
-    MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件，每次都是新的时间，每次都要进行校对，时间上传后系统进行即可
+    while(1){
+        PrintLog(0,"Jilushijian-----Jilushijian\n");
+        MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件，每次都是新的时间，每次都要进行校对，时间上传后系统进行即可
+        sleep(1000);//十秒执行一次
+    }
 }
 
 static int Yinpinguoqi(char *lujing){
