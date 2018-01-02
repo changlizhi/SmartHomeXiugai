@@ -608,7 +608,7 @@ static void *PlayTask_Pressdown(void *arg)
                             system("killall -9 madplay");
                             PrintLog(0,"play button press to stop play1...\n");
 
-                            SaveAlarm(GetCurrentAlarm());
+                            //SaveAlarm(GetCurrentAlarm());
                             gpio_set_value(GPIO_42,1);
                             gpio_set_value(GPIO_39,0);
                             //system("wifi up");
@@ -662,7 +662,7 @@ static void *Bofangzanting(void *arg)
                     playstate = Kaishizhendong();
                     if(playstate == 0)
                     {
-                        SaveAlarm(GetCurrentAlarm());//开始记录播放大小这里应该是循环更新时间，因为初始有一个时间了
+                        //SaveAlarm(GetCurrentAlarm());//开始记录播放大小这里应该是循环更新时间，因为初始有一个时间了
                         currentButtonState = 1;
                         PrintLog(0,"bofangzhong jilu daxiao...\n");
                     }
@@ -672,7 +672,7 @@ static void *Bofangzanting(void *arg)
                     PrintLog(0,"guanbi yinpin...\n");
                     system("killall -9 madplay");
                     PrintLog(0,"guanbi yinpin chenggong...\n");
-                    SaveAlarm(GetCurrentAlarm());//记录播放时间
+                    //SaveAlarm(GetCurrentAlarm());//记录播放时间
                     currentButtonState = 0;
                 }
                 presstimes = 0;
@@ -791,15 +791,15 @@ static int Kaishizhendong()
 }
 
 static void *Jilushijian(void *arg){
-    MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件
+    MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件，每次都是新的时间，每次都要进行校对，时间上传后系统进行即可
 }
 
 static int Yinpinguoqi(char *lujing){
-    PrintLog(0,"lujing-----%s",lujing);
+    PrintLog(0,"lujing-----%s\n",lujing);
     time_t t;
     t=time(0);//当前时间秒数
 
-    PrintLog(0,"t-----%ld",t)
+    PrintLog(0,"dangqian shijian-----%ld\n",t);
     struct stat buf;
     int result;
 
@@ -810,14 +810,14 @@ static int Yinpinguoqi(char *lujing){
     //显示文件状态信息
 
     if( result != 0 ){
-        PrintLog( "wenjian chucuo" );//并提示出错的原因，如No such file or directory（无此文件或索引）
+        PrintLog(0,"wenjian chucuo" );//并提示出错的原因，如No such file or directory（无此文件或索引）
     }
     else
     {
-        PrintLog("wenjian daxiao: %d", buf.st_size);
-        PrintLog("chuangjian shijian : %s", ctime(&buf.st_ctime));
-        PrintLog("fangwen shijian : %s", ctime(&buf.st_atime));
-        PrintLog("xiugai shijian: %s", ctime(&buf.st_mtime));
+        PrintLog(0,"wenjian daxiao: %d\n", buf.st_size);
+        PrintLog(0,"chuangjian shijian : %s\n", ctime(&buf.st_ctime));
+        PrintLog(0,"fangwen shijian : %s\n", ctime(&buf.st_atime));
+        PrintLog(0,"xiugai shijian: %s\n", ctime(&buf.st_mtime));
 
     }
 }
