@@ -791,11 +791,8 @@ static int Kaishizhendong()
 }
 
 static void *Jilushijian(void *arg){
-    while(1){
-        PrintLog(0,"Jilushijian-----Jilushijian\n");
-        MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件，每次都是新的时间，每次都要进行校对，时间上传后系统进行即可
-        sleep(1000);//十秒执行一次
-    }
+    PrintLog(0,"Jilushijian-----Jilushijian\n");
+    MakeAlarmG(GetCurrentAlarm());//启动时创建一个文件，每次都是新的时间，每次都要进行校对，时间上传后系统进行即可
 }
 
 static int Yinpinguoqi(char *lujing){
